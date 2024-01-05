@@ -17,8 +17,8 @@
 import interface
 
 # Web server
-from gevent import monkey
-monkey.patch_all(thread=False, socket=False)
+#from gevent import monkey
+#monkey.patch_all(thread=False, socket=False)
 from flask import Flask, Blueprint, jsonify, abort, make_response, request
 
 # CLI
