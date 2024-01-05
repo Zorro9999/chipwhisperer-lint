@@ -3,8 +3,8 @@ analysis.py
 
 Multithreaded t-tests for ChipWhisperer projects
 """
-from gevent import monkey
-monkey.patch_all(thread=False, socket=False)
+#from gevent import monkey
+#monkey.patch_all(thread=False, socket=False)
 import multiprocessing as mp
 import multiprocessing.pool
 import statsmodels.api as sm
