@@ -4,7 +4,8 @@ analysis.py
 Multithreaded t-tests for ChipWhisperer projects
 """
 
-
+from gevent import monkey
+monkey.patch_all()
 import multiprocessing as mp
 import multiprocessing.pool
 import statsmodels.api as sm
