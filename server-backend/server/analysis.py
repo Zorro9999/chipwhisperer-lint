@@ -161,10 +161,7 @@ def student_ttest(group, traces):
         s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
         s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
         
-        # Заменяем нули на маленькое положительное число, чтобы избежать деления на ноль
         s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
-
-        # Теперь мы можем безопасно вычислить t, поскольку знаменатель не будет равен нулю
         t = beta / np.sqrt(s_beta2_safe)
         
         #t = beta / np.sqrt(s_beta2)
