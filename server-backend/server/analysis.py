@@ -161,7 +161,15 @@ def student_ttest(group, traces):
         s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
         s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
         
-        t = beta / np.sqrt(s_beta2)
+        # Ensure s_beta2 is positive and not NaN before taking the square root
+        if s_beta2 > 0 and not np.isnan(s_beta2):
+            t = beta / np.sqrt(s_beta2)
+        else:
+        # Handle the case where s_beta2 is not valid for square root and division
+            t = np.nan  # Or some other default value or handling logic
+            print(f"Warning: Invalid value for s_beta2 encountered: {s_beta2}")
+        
+        #t = beta / np.sqrt(s_beta2)
         return np.nan_to_num(t) 
     except Exception as e:
         print traceback.format_exc()
