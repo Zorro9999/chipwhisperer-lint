@@ -16,7 +16,7 @@ sudo yum -y install git
 sudo yum -y install python2.7 python-pip python-virtualenv python-scipy python-numpy
 sudo yum -y install build-utils gcc
 
-sudo -u $USERNAME git clone https://github.com/newaetech/chipwhisperer-lint.git /opt/cwlint/cwlint_git
+sudo -u $USERNAME git clone https://github.com/Zorro9999/chipwhisperer-lint.git /opt/cwlint/cwlint_git
 cd /opt/cwlint/cwlint_git
 cd server-backend
 #sudo -u $USERNAME virtualenv cwlint
