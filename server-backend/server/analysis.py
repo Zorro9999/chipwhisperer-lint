@@ -166,9 +166,8 @@ def student_ttest(group, traces):
             t = beta / np.sqrt(s_beta2)
         else:
         # Handle the case where s_beta2 is not valid for square root and division
-            t = np.nan  # Or some other default value or handling logic
-            print(f"Warning: Invalid value for s_beta2 encountered: {s_beta2}")
-        
+            t = float('nan')  # Or some other default value or handling logic
+            print "Warning: Invalid value for s_beta2 encountered: {}".format(s_beta2)
         #t = beta / np.sqrt(s_beta2)
         return np.nan_to_num(t) 
     except Exception as e:
