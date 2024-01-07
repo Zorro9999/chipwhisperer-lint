@@ -165,7 +165,7 @@ def student_ttest(group, traces):
         s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
         t = beta / np.sqrt(s_beta2_safe)
         
-        t = beta / np.sqrt(s_beta2)
+        #t = beta / np.sqrt(s_beta2)
         return np.nan_to_num(t) 
     except Exception as e:
         print traceback.format_exc()
