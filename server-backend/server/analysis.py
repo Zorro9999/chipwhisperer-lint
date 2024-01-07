@@ -150,53 +150,25 @@ def welch_ttest(group, traces):
 def student_ttest(group, traces):
     try:
         group = np.array(group)
-        traces = np.array(traces)
-        n = len(group)
         S_x = np.sum(group)
         S_y = np.sum(traces, axis=0)
         S_xx = np.sum(group**2)
         S_yy = np.sum(traces**2, axis=0)
-        S_xy = np.dot(group, traces)
+        S_xy = np.inner(np.transpose(traces), group)
         
-        denominator = n * S_xx - S_x**2
-        if denominator == 0:
-            return np.nan_to_num(np.full(traces.shape[1], np.nan))
-
-        beta = (n * S_xy - S_x * S_y) / denominator
-        alpha = (S_y - beta * S_x) / n
+        n = len(group)
+        beta = (n*S_xy - S_x*S_y) / (n*S_xx - S_x**2)
+        alpha = S_y/n - beta*S_x/n
+        s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
+        s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
         
-        s2 = (S_yy + (alpha**2 * n) + (beta**2 * S_xx) - 2 * (alpha * S_y + beta * S_xy - alpha * beta * S_x)) / (n - 2)
-        s_beta2 = s2 / denominator
-        s_beta2_safe = np.where(s_beta2 > 0, s_beta2, np.nan)
-        t = beta / np.sqrt(s_beta2_safe)    
+        s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
+        t = beta / np.sqrt(s_beta2_safe)
+        
+        t = beta / np.sqrt(s_beta2)
         return np.nan_to_num(t) 
-        
     except Exception as e:
-        print traceback.format_exc() 
-
-
-#def student_ttest(group, traces):
-    #try:
-        #group = np.array(group)
-        #S_x = np.sum(group)
-        #S_y = np.sum(traces, axis=0)
-        #S_xx = np.sum(group**2)
-        #S_yy = np.sum(traces**2, axis=0)
-        #S_xy = np.inner(np.transpose(traces), group)
-        
-        #n = len(group)
-        #beta = (n*S_xy - S_x*S_y) / (n*S_xx - S_x**2)
-        #alpha = S_y/n - beta*S_x/n
-        #s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
-        #s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
-        
-        #s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
-        #t = beta / np.sqrt(s_beta2_safe)
-        
-        #t = beta / np.sqrt(s_beta2)
-        #return np.nan_to_num(t) 
-    #except Exception as e:
-        #print traceback.format_exc()
+        print traceback.format_exc()
     
 def worker_thread(group, numtraces, tracelen, proj_name, res):
     try:
