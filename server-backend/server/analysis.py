@@ -148,26 +148,55 @@ def welch_ttest(group, traces):
     
 def student_ttest(group, traces):
     try:
-        group = np.array(group)
+        group = np.array(group, dtype=np.float64)  
         S_x = np.sum(group)
         S_y = np.sum(traces, axis=0)
         S_xx = np.sum(group**2)
         S_yy = np.sum(traces**2, axis=0)
-        S_xy = np.inner(np.transpose(traces), group)
-        
+        S_xy = np.dot(np.transpose(traces), group) 
         n = len(group)
-        beta = (n*S_xy - S_x*S_y) / (n*S_xx - S_x**2)
+        denominator = n*S_xx - S_x**2
+        if denominator == 0:
+            raise ValueError("The denominator for beta and s_beta2 is zero.")
+        
+        beta = (n*S_xy - S_x*S_y) / denominator
         alpha = S_y/n - beta*S_x/n
-        s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
-        s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
+        
+        if n <= 2:
+            raise ValueError("The number of samples must be greater than 2 to compute s_e2.")
+        
+        s_e2 = (n*S_yy - S_y**2 - beta**2 * denominator) / (n * (n-2))
+        s_beta2 = n*s_e2 / denominator
         
         s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
         t = beta / np.sqrt(s_beta2_safe)
         
-        #t = beta / np.sqrt(s_beta2)
         return np.nan_to_num(t) 
     except Exception as e:
-        print traceback.format_exc()
+        print traceback.format_exc()  
+
+#def student_ttest(group, traces):
+    #try:
+        #group = np.array(group)
+        #S_x = np.sum(group)
+        #S_y = np.sum(traces, axis=0)
+        #S_xx = np.sum(group**2)
+        #S_yy = np.sum(traces**2, axis=0)
+        #S_xy = np.inner(np.transpose(traces), group)
+        
+        #n = len(group)
+        #beta = (n*S_xy - S_x*S_y) / (n*S_xx - S_x**2)
+        #alpha = S_y/n - beta*S_x/n
+        #s_e2 = (n*S_yy - S_y**2 - beta**2 * (n*S_xx - S_x**2)) / n / (n-2)
+        #s_beta2 = n*s_e2 / (n*S_xx - S_x**2)
+        
+        #s_beta2_safe = np.where(s_beta2 == 0, np.finfo(float).eps, s_beta2)
+        #t = beta / np.sqrt(s_beta2_safe)
+        
+        #t = beta / np.sqrt(s_beta2)
+        #return np.nan_to_num(t) 
+    #except Exception as e:
+        #print traceback.format_exc()
     
 def worker_thread(group, numtraces, tracelen, proj_name, res):
     try:
